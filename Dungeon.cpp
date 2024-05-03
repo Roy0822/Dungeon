@@ -61,8 +61,7 @@ void Dungeon::createMap() {
     Klee_script.push_back(tempscript);
     tempscript = "'Well... Bye-Bye onii-chan! Don't say where I am to Master Jean~'\n";
     Klee_script.push_back(tempscript);
-    NPC Klee = NPC("Klee", Klee_script); rooms[0][0].getObjects().push_back(&Klee);
-
+    NPC Klee = NPC("Klee", Klee_script); rooms[0][0].setObjects(&Klee);
     rooms[3][1].setRoomType("NPC");
     vector<string> Himeko_script;
     tempscript = "When you enter the room, you see a familiar red - hair lady with a pour over coffee.She is the navigator of astral express : Himeko!\n";
@@ -73,8 +72,9 @@ void Dungeon::createMap() {
     Himeko_script.push_back(tempscript);
     tempscript = "'It's fine. Bless your road of trailblaze~'\n";
     Himeko_script.push_back(tempscript);
-    NPC Himeko = NPC("Himeko", Himeko_script); rooms[3][1].getObjects().push_back(&Himeko);
-
+    NPC Himeko = NPC("Himeko", Himeko_script); rooms[3][1].setObjects(&Himeko);
+    cout << rooms[3][1].getObjects()->getName();
+    
     rooms[4][4].setRoomType("NPC");
     vector<string> AL1S_script;
     tempscript = "When you enter the room, you see a little girl with a halo and and small robot accessory. She is the club member of game development department, princess of nameless gods, AL-1S(Alice).\n'Welcome. I has waited you for long times, and I know what hero are going to do, so I will give you my best help: My laser cannon.'\n'However, I need to give the engineering club some compensate, so I need $90 for them to make a new laser cannon. Do you want to give me?\n";
@@ -83,8 +83,8 @@ void Dungeon::createMap() {
     AL1S_script.push_back(tempscript);
     tempscript = "'OK, but yo' get in trouble like so deep bro... Good Luck!'\n";
     AL1S_script.push_back(tempscript);
-    NPC AL_1S = NPC("AL_1S", AL1S_script); rooms[4][4].getObjects().push_back(&AL_1S);
-
+    NPC AL_1S = NPC("AL_1S", AL1S_script); rooms[4][4].setObjects(&AL_1S);
+    cout << rooms[4][4].getObjects()->getName();
     /* Merchants */
     rooms[0][3].setRoomType("NPC");
     vector<Goods*> Beedle1_comods; vector<Food*> b1_foods;
@@ -97,7 +97,7 @@ void Dungeon::createMap() {
     Food bottled_water = Food("bottled water", 10, 0, 4, "food"); b1_foods.push_back(&bottled_water);
     Food oolong_tea = Food("oolong tea", 20, 0, 8, "food"); b1_foods.push_back(&oolong_tea);
     Food milk = Food("Milk", 35, 2, 2, "milk"); b1_foods.push_back(&milk);
-    NPC Beedle1 = NPC("Beedle", Beedle1_comods, b1_foods); rooms[0][3].getObjects().push_back(&Beedle1);
+    NPC Beedle1 = NPC("Beedle", Beedle1_comods, b1_foods); rooms[0][3].setObjects(&Beedle1);
 
     rooms[1][4].setRoomType("NPC");
     vector<Goods*> Beedle2_comods; vector<Food*>b2_foods;
@@ -110,7 +110,7 @@ void Dungeon::createMap() {
     b2_foods.push_back(&bottled_water);
     b2_foods.push_back(&oolong_tea);
     b2_foods.push_back(&milk);
-    NPC Beedle2 = NPC("Beedle but cooler", Beedle2_comods, b2_foods); rooms[1][4].getObjects().push_back(&Beedle2);
+    NPC Beedle2 = NPC("Beedle but cooler", Beedle2_comods, b2_foods); rooms[1][4].setObjects(&Beedle2);
 
     /* Boss to be made */
     vector<string> boss_script;
@@ -123,26 +123,26 @@ void Dungeon::createMap() {
     tempskills.push_back(Skill("Triple Integral", "psycho", 15, "attack"));
     tempskills.push_back(Skill("Directional Derivation", "psycho", 15, "attack"));
     Boss boss = Boss("Calculus", 200, 40, 15, tempskills); boss.setscript(boss_script);
-    rooms[0][4].getObjects().push_back(&boss);
+    rooms[0][4].setObjects(&boss);
     finalboss = &boss;
 
     /* monsters */
     Monster Skeleton_lv1 = Monster("Skeleton lv1", 70, 25, 0, "ground"); Skeleton_lv1.setTag("monster"); //no skill, normal attack
-    rooms[4][3].getObjects().push_back(&Skeleton_lv1);
+    rooms[4][3].setObjects(&Skeleton_lv1);
     Monster Skeleton_lv2 = Monster("Skeleton lv2", 100, 30, 0, "ground"); Skeleton_lv2.setTag("monster");
-    rooms[1][2].getObjects().push_back(&Skeleton_lv2);
+    rooms[1][2].setObjects(&Skeleton_lv2);
     Monster Zombie_lv1 = Monster("Zombie lv1", 70, 20, 5, "fire"); Zombie_lv1.setTag("monster");
-    rooms[3][2].getObjects().push_back(&Zombie_lv1);
+    rooms[3][2].setObjects(&Zombie_lv1);
     Monster Zombie_lv2 = Monster("Zombie lv2", 100, 25, 5, "fire"); Zombie_lv2.setTag("monster");
-    rooms[2][1].getObjects().push_back(&Zombie_lv2);
+    rooms[2][1].setObjects(& Zombie_lv2);
     Monster Zombie_lv3 = Monster("Zombie lv3", 120, 30, 5, "fire"); Zombie_lv3.setTag("monster");
-    rooms[1][3].getObjects().push_back(&Zombie_lv3);
+    rooms[1][3].setObjects(&Zombie_lv3);
     Monster Slime_lv1 = Monster("Slime lv1", 100, 20, 0, "water"); Slime_lv1.setTag("monster");
-    rooms[4][2].getObjects().push_back(&Slime_lv1);
+    rooms[4][2].setObjects(&Slime_lv1);
     Monster Slime_lv2 = Monster("Slime lv2", 120, 25, 0, "water"); Slime_lv2.setTag("monster");
-    rooms[3][3].getObjects().push_back(&Slime_lv2);
+    rooms[3][3].setObjects(&Slime_lv2);
     Monster Slime_lv3 = Monster("Slime lv3", 150, 25, 0, "water"); Slime_lv3.setTag("monster");
-    rooms[2][3].getObjects().push_back(&Slime_lv3);
+    rooms[2][3].setObjects(&Slime_lv3);
 
 
     rooms[0][1].setRoomType("wildlife"); rooms[0][2].setRoomType("swamp"); rooms[0][3].setRoomType("NPC"); rooms[0][4].setRoomType("BOSS");
@@ -297,43 +297,47 @@ void Dungeon::startGame() {
 
 // Choose action for the player in the current room
 void Dungeon::chooseAction() {
-    Room* currentRoom = player.getCurrentRoom();
-    cout << "You are now in room " << currentRoom->getIndex() << ". Choose your action:\n";
-    cout << "---------------------------------------" << endl;
 
-    int roomSize = currentRoom->getObjects().size(); 
-    for (int i = 0; i < roomSize; i++) {
-        cout << i << ". Interact with " << currentRoom->getObjects()[i]->getName() << "\n";
+    Room* currentRoom = player.getCurrentRoom();
+
+    cout << "You are now in room " << currentRoom->getIndex() << ". Choose your action:\n";
+    cout << "---------------------------------------" << endl; 
+    if (currentRoom->getObjects() != NULL) { 
+        Object* curObj = currentRoom->getObjects();
+
+        if(curObj != NULL) cout << 0 << ". Interact with " << curObj->getName() << "\n";
     }
 
-    cout << roomSize << ". Check Map\n";
-    cout << roomSize + 1 << ". Check Current Status\n";
-    cout << roomSize + 2 << ". Move to other Rooms\n";
-    cout << roomSize + 3 << ". Use Items\n";
+
+
+
+    cout << 1 << ". Check Map\n";
+    cout << 2 << ". Check Current Status\n";
+    cout << 3 << ". Move to other Rooms\n";
+    cout << 4 << ". Use Items\n";
 
     int choice;
     cin >> choice;
 
-    if (choice < roomSize) {
-        handleEvent(currentRoom->getObjects()[choice]);
+    if (choice == 0) {
+        handleEvent(currentRoom->getObjects());
     }
-    else if (choice == roomSize) {
+    else if (choice == 1) {
         printMap();
     }
-    else if (choice == roomSize + 1) {
+    else if (choice == 2) {
         player.printStatus();
     }
-    else if (choice == roomSize + 2) {
+    else if (choice == 3) {
         handleMovement();
     }
-    else if (choice == roomSize + 3) {
+    else if (choice == 4) {
         player.triggerEvent(&player);
     }
     else {
-        cout << "Invalid choice.\n";
+        cout << "Invalid choice.\nChoose Your Action"; cin >> choice;
     }
 }
-
 // Check if the game should end (player wins or dies)
 bool Dungeon::checkGameLogic() {
     if (player.checkIsDead()) {
@@ -350,13 +354,12 @@ bool Dungeon::checkGameLogic() {
 // Main game loop
 void Dungeon::runDungeon() {
     startGame(); // Start with the initial setup
-
+    
     cout << "Loading..." << endl;
     this_thread::sleep_for(chrono::seconds(2));
     cout << "Finished! Enjoy your journey! :D\n";
 
     printMap();    
-
     while (!checkGameLogic()) {
 
         chooseAction(); // Let the player choose an action    

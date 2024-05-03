@@ -18,10 +18,10 @@ private:
     bool isExit;
     int index;
     string roomType;
-    vector<Object*> objects; /*contain 1 or multiple objects, including monster, npc, etc*/
+    Object* objects; /*contain 1 or multiple objects, including monster, npc, etc*/
 public:
     Room();
-    Room(bool, int,string, vector<Object*>);
+    Room(bool, int,string, Object*);
     bool popObject(Object*); /*pop out the specific object, used when the interaction is done*/
 
     /* Set & Get function*/
@@ -31,11 +31,11 @@ public:
     void setRightRoom(Room*);
     void setIsExit(bool);
     void setIndex(int);
-    void setObjects(vector<Object*>);
+    void setObjects(Object*);
     void setRoomType(string);
     bool getIsExit();
     int getIndex();
-    vector<Object*> getObjects();
+    Object* getObjects();
     string getRoomType();
     Room* getUpRoom();
     Room* getDownRoom();

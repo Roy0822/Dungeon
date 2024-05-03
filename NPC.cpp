@@ -12,7 +12,7 @@ NPC::NPC(string n, vector<string> tscript, vector<Goods*> commodities)
 NPC::NPC(string n, vector<string> tscript)
     : isInteract(false), script(tscript) {
     setName(n);
-    setTag("NPC");
+    setTag("NPC"); 
 }
 
 NPC::NPC(string n, vector<Goods*> commodities, vector<Food*> foodie)

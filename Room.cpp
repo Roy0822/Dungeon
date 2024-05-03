@@ -4,8 +4,9 @@ Room::Room() {
     setIsExit(0);
     setIndex(0);
     setRoomType("");
+    setObjects(NULL);
 }
-Room::Room(bool tisExit, int id, string type, vector<Object*> tobjects){
+Room::Room(bool tisExit, int id, string type, Object* tobjects){
     setIsExit(tisExit);
     setIndex(id);
     setRoomType(type);
@@ -13,6 +14,7 @@ Room::Room(bool tisExit, int id, string type, vector<Object*> tobjects){
 }
 
 bool Room::popObject(Object* tobj) {
+    /*
     // find a specific thing with iterator
     auto it = std::find(objects.begin(), objects.end(), tobj);
 
@@ -23,6 +25,9 @@ bool Room::popObject(Object* tobj) {
     else {
         return false;  // not finding it
     }
+    */
+    if (tobj == getObjects()) setObjects(NULL);
+    return 0;
 }
 
 /* Set & Get function*/
@@ -46,7 +51,7 @@ void Room::setIsExit(bool temp) {
 void Room::setIndex(int temp) {
     this->index = temp;
 }
-void Room::setObjects(vector<Object*>temp) {
+void Room::setObjects(Object* temp) {
     this->objects = temp;
 }
 void Room::setRoomType(string temp) { //added
@@ -59,7 +64,7 @@ bool Room::getIsExit() {
 int Room::getIndex() {
     return index;
 }
-vector<Object*> Room::getObjects() {
+Object* Room::getObjects() {
     return objects;
 }
 string Room::getRoomType() {
