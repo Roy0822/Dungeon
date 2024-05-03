@@ -73,7 +73,6 @@ void Dungeon::createMap() {
     tempscript = "'It's fine. Bless your road of trailblaze~'\n";
     Himeko_script.push_back(tempscript);
     NPC Himeko = NPC("Himeko", Himeko_script); rooms[3][1].setObjects(&Himeko);
-    cout << rooms[3][1].getObjects()->getName();
     
     rooms[4][4].setRoomType("NPC");
     vector<string> AL1S_script;
@@ -84,7 +83,6 @@ void Dungeon::createMap() {
     tempscript = "'OK, but yo' get in trouble like so deep bro... Good Luck!'\n";
     AL1S_script.push_back(tempscript);
     NPC AL_1S = NPC("AL_1S", AL1S_script); rooms[4][4].setObjects(&AL_1S);
-    cout << rooms[4][4].getObjects()->getName();
     /* Merchants */
     rooms[0][3].setRoomType("NPC");
     vector<Goods*> Beedle1_comods; vector<Food*> b1_foods;
@@ -278,11 +276,25 @@ void Dungeon::handleMovement()
 
 // Deal with player interactions with objects in the room
 void Dungeon::handleEvent(Object* curobj) {
+    NPC* npc = dynamic_cast<NPC*>(curobj);//if not then null
+    Monster* monster = dynamic_cast<Monster*> (curobj);
+
     cout << "---------------------------------------" << endl;
-    bool status = curobj->triggerEvent(&player);
-    while (status) {
-        status = curobj->triggerEvent(&player);
+    if (npc) {
+        bool status = npc->triggerEvent(&player);
+        cout << "nice";
+
+        while (status) {
+            status = npc->triggerEvent(&player);
+        }
     }
+    else if (monster) {
+        bool status = npc->triggerEvent(&player);
+        while (status) {
+            status = npc->triggerEvent(&player);
+        }
+    }
+    
 }
 
 // Start the game, creating the map and the player
@@ -303,12 +315,18 @@ void Dungeon::chooseAction() {
     cout << "You are now in room " << currentRoom->getIndex() << ". Choose your action:\n";
     cout << "---------------------------------------" << endl; 
     if (currentRoom->getObjects() != NULL) { 
-        Object* curObj = currentRoom->getObjects();
+        NPC* npc = dynamic_cast<NPC*>(currentRoom->getObjects());//if not then null
+        Monster* monster = dynamic_cast<Monster*> (currentRoom->getObjects());
+        if (npc) {
+            string tname = npc->getName();
+            cout << 0 << ". Interact with " << tname << "\n";
+        }
+        else if (monster) {
+            string tname = monster->getName();
+            cout << 0 << ". Combat with " << tname << "\n";
 
-        if(curObj != NULL) cout << 0 << ". Interact with " << curObj->getName() << "\n";
+        }
     }
-
-
 
 
     cout << 1 << ". Check Map\n";
@@ -320,7 +338,14 @@ void Dungeon::chooseAction() {
     cin >> choice;
 
     if (choice == 0) {
-        handleEvent(currentRoom->getObjects());
+        NPC* npc = dynamic_cast<NPC*>(currentRoom->getObjects());
+        Monster* monster = dynamic_cast<Monster*>(currentRoom->getObjects());
+        if (npc) {
+            handleEvent(npc);
+        }
+        else if (monster) {
+            handleEvent(monster);
+        }
     }
     else if (choice == 1) {
         printMap();
@@ -354,7 +379,8 @@ bool Dungeon::checkGameLogic() {
 // Main game loop
 void Dungeon::runDungeon() {
     startGame(); // Start with the initial setup
-    
+    cout << rooms[3][1].getObjects()->getTag() << endl;
+
     cout << "Loading..." << endl;
     this_thread::sleep_for(chrono::seconds(2));
     cout << "Finished! Enjoy your journey! :D\n";
