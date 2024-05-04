@@ -15,7 +15,7 @@ Item::Item(string tn, int h, int a, int d) {
 /* pick up action. You should add status to the  */
 /* player.                                       */
 bool Item::triggerEvent(Object* obj) {  //no need to implement
-    Player* player = dynamic_cast<Player*>(obj);    
+    Player* player = dynamic_cast<Player*>(obj);
     return 0;
 }
 
@@ -40,24 +40,28 @@ void Item::setDefense(int t) {
 }
 bool Food::triggerEvent(Object* obj) {
     Player* player = dynamic_cast<Player*>(obj);
-    if (getTag() == "food") {
+    if (getName() != "Milk") {
         cout << "You get: Hunger:" << hungerVal << ",  Thirst:" << thirstVal << ", Health:" << getprice() << endl; //recover health equal to price
         player->setHG((player->getHG() + hungerVal >= 20) ? 20 : player->getHG() + hungerVal); //cannot be over 20
         player->setTHR((player->getTHR() + thirstVal) >= 20 ? 20 : player->getTHR() + thirstVal); // cannot be over 20
         player->setCurrentHealth((player->getCurrentHealth() + getprice() >= player->getMaxHealth()) ? player->getMaxHealth() : player->getCurrentHealth() + getprice()); //cannot be over the max health
         return 0;
     }
-    else if (getTag() == "milk") {
+    else if (getName() == "Milk") {
         cout << "You get: Hunger:" << hungerVal << ",  Thirst:" << thirstVal << ", MP:50, Health:30\n";
         cout << "Also, any negative condition of yours is cured. LETSSSSSSSS GOOOOO\n";
-        player->setHG((player->getHG() + hungerVal >= 20) ? 20 : player->getHG() + hungerVal); //cannot be over 20
-        player->setTHR((player->getTHR() + thirstVal) >= 20 ? 20 : player->getTHR() + thirstVal); // cannot be over 20
-        player->setCurrentHealth((player->getCurrentHealth() + 30 >= player->getMaxHealth()) ? player->getMaxHealth() : player->getCurrentHealth() + 30); //cannot be over the max health
-        player->setMP((player->getMP() + 50 >= 150) ? 150 : player->getMP() + 50); //cannot be over 150
-        for (int i = 0; i < player->getCondition().size(); i++) {
-            if (player->getCondition()[i].getValue() < 0) player->getCondition()[i].setValue(0); //if any negative condition make it to zero
+        player->setHG(min(20, player->getHG() + hungerVal));  // Cap at 20
+        player->setTHR(min(20, player->getTHR() + thirstVal));  // Cap at 20
+        player->setCurrentHealth(min(player->getMaxHealth(), player->getCurrentHealth() + 30));
+        player->setMP(min(150, player->getMP() + 50));  // Cap at 150
+
+
+        for (auto& condition : player->getCondition()) {
+            if (condition->getValue() < 0) {
+                condition->setValue(0);  // Neutralize negative values
+            }
         }
-        return 0;
+        return 0;  // Success
     }
 }
 Food::Food() {
@@ -72,9 +76,8 @@ Goods::Goods() {
 Goods::Goods(string n, int h, int a, int d, int p, string t, string ttag) {
     setName(n); setHealth(h); setAttack(a); setDefense(d); setprice(p); setType(t); setTag(ttag);
 }
-/*
+
 bool Goods::triggerEvent(Object* obj) { 
     Player* player = dynamic_cast<Player*>(obj);
-    if(getTag())
+    return 0;
 }
-*/

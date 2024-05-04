@@ -20,7 +20,7 @@ class Player : public GameCharacter {
 private:
     Room* currentRoom;
     Room* previousRoom;
-    vector<Condition> conditions;
+    vector<Condition*> conditions;
     vector<Food*> foods;
     vector<Skill> skills;
     Goods* helmet;
@@ -76,11 +76,13 @@ public:
     void setHG(int hunger);
     int getHG() ;
 
-    vector<Condition> getCondition() ;
-    void addCondi(Condition tempcondi);
+    vector<Condition*> getCondition() ;
+    void addCondi(Condition* tempcondi);
 
     int getmoney();
     void setmoney(int temp);
+
+    void pickupItem(Item*);
 
 
 };

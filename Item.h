@@ -11,10 +11,11 @@ using namespace std;
 class Player;
 class Food;
 class Goods;
+
 class Item: public Object
 {
 private:
-    int health,attack,defense;
+    int health; int attack; int defense;
 public:
     Item();
     Item(string, int, int, int);
@@ -24,7 +25,7 @@ public:
     /* pick up action. You should add status to the  */
     /* player.                                       */
     virtual bool triggerEvent(Object*);
-
+    //virtual bool pickup(Object*);
     /* Set & Get function*/
     int getHealth();
     int getAttack();
@@ -54,6 +55,7 @@ public:
     void setprice(int temp) {
         this->price = temp;
     }
+    bool triggerEvent(Object* obj);
 
 };
 

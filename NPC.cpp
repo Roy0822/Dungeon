@@ -29,19 +29,23 @@ bool NPC::triggerEvent(Object* obj) {
         cout << script[0] << endl;
         cout << "---------------------------------------" << endl;
         int condi;
+        if (isInteract == 1) return 0;
+        cout << script[1] << endl;
         cout << "1.Make a deal with " << getName() << "\n2.leave\nEnter Your Choice:";
         cin >> condi;
         if (condi == 1) {
             if (commodities.size() == 0) { // commonds size ==0 meaning that it is a NPC, but not a merchant 
                 if (getName() == "Klee" && !getIsinteract()) { //diff NPC have diff trade, make sure only interact once
                     if (player->getmoney() - 20 < 0) {
+                        player->setmoney(player->getmoney() - 20 <= 0 ? 0 : player->getmoney() - 20);
+
                         cout << "Sorry, you don't have enough money. poor you...\n";
                         return 0; //stop interact
                     }
                     else {
-                        cout << script[1] << endl; //decide to buy script
-                        Condition Klee_bless = Condition("Klee's blessing", "attack", 20);
-                        player->getCondition().push_back(Klee_bless); //this is pass copy    (((NOT reference))) 
+                        cout << script[2] << endl; //decide to buy script
+                        Condition* Klee_bless = new Condition("Klee's blessing", "attack", 20);
+                        player->addCondi(Klee_bless);
                         setIsinteract(true);
                     }
                 }
@@ -50,9 +54,11 @@ bool NPC::triggerEvent(Object* obj) {
                         cout << "Sorry, you don't have enough money. poor you...\n";
                     }
                     else {
-                        cout << script[1] << endl; //decide to buy script
-                        Condition Himeko_bless = Condition("Himeko's blessing", "poison", -5); //this is posion, careful dealing with
-                        player->getCondition().push_back(Himeko_bless); //this is pass copy    (((NOT reference))) 
+                        cout << script[2] << endl; //decide to buy script
+                        player->setmoney(player->getmoney() - 5 <= 0 ? 0 : player->getmoney() - 5);
+                        Condition* Himeko_bless = new Condition("Himeko's blessing", "health", -5); //this is posion, careful dealing with
+                        player->addCondi(Himeko_bless); //
+                        cout << "You have" << player->getCondition().size() << "conditons";
                         setIsinteract(true);
                     }
                 }
@@ -61,9 +67,10 @@ bool NPC::triggerEvent(Object* obj) {
                         cout << "Sorry, you don't have enough money. poor you...\n";
                     }
                     else {
-                        cout << script[1] << endl; //decide to buy script
-                        Condition AL1S_bless = Condition("AL_1S's blessing", "attack", 90);
-                        player->getCondition().push_back(AL1S_bless); //this is pass copy    (((NOT reference))) 
+                        cout << script[2] << endl; //decide to buy script
+                        player->setmoney(player->getmoney() - 90 <= 0 ? 0 : player->getmoney() - 90);
+                        Condition* AL1S_bless = new Condition("AL_1S's blessing", "attack", 90);
+                        player->addCondi(AL1S_bless); // 
                         setIsinteract(true);
                     }
 
@@ -72,7 +79,7 @@ bool NPC::triggerEvent(Object* obj) {
             }
         }
         else if (condi == 2) { //no interaction
-            cout << script[2];
+            cout << "OK, have a great day though :>\n";
             return 0;
         }
         else cin >> condi;
@@ -80,7 +87,7 @@ bool NPC::triggerEvent(Object* obj) {
     else if (commodities.size() != 0) {
         cout << "Commodities: \n"; //list all commodities
         for (int i = 0; i < commodities.size(); i++) { //helmet weapon armor
-            if (commodities[i]->getType() == "helmet" && commodities[i]->getType() == "armor")cout << i << ". " << commodities[i]->getName() << " : def+" << commodities[i]->getDefense() << ", price = " << commodities[i]->getprice() << endl;
+            if (commodities[i]->getType() == "helmet" || commodities[i]->getType() == "armor")cout << i << ". " << commodities[i]->getName() << " : def+" << commodities[i]->getDefense() << ", price = " << commodities[i]->getprice() << endl;
             else if (commodities[i]->getType() == "weapon")cout << i << ". " << commodities[i]->getName() << " : atk+" << commodities[i]->getAttack() << ", price = " << commodities[i]->getprice() << endl;
         }
         for (int i = 0; i < foods.size(); i++) {
@@ -99,9 +106,9 @@ bool NPC::triggerEvent(Object* obj) {
             else cout << "You don't have enough money.\n"; return 0;
         }
         else if (choice >= commodities.size() && choice < commodities.size() + foods.size()) {
-            if (player->getmoney() - foods[choice]->getprice() >= 0) {
-                player->getfoods().push_back(foods[choice]);
-                player->setmoney(player->getmoney() - foods[choice]->getprice()); //deduct money
+            if (player->getmoney() - foods[choice- commodities.size()]->getprice() >= 0) {
+                player->addfoods(foods[choice- commodities.size()]);
+                player->setmoney(player->getmoney() - foods[choice- commodities.size()]->getprice()); //deduct money
             }
             else cout << "You don't have enough money.\n"; return 0;
         }

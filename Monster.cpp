@@ -12,11 +12,14 @@ Monster::Monster(const string n, int chp, int a, int d, const string prop) {
     setMaxHealth(chp);
     setAttack(a);
     setDefense(d);
+    setprop(prop);
 }
 
 bool Monster::triggerEvent(Object* obj) {
     Player* player = dynamic_cast<Player*>(obj);  
     if (this->checkIsDead()) {
+        cout << "You defeated " << getName() << "!\n";
+
         return false;  // If monster is dead, end event
     }
     if (player->checkIsDead()) {
@@ -24,6 +27,8 @@ bool Monster::triggerEvent(Object* obj) {
     }
 
     // Example combat interaction
+    cout << "---------------------------------------" << endl;
+    printStatus();
     cout << "---------------------------------------" << endl;
 
     int skill_count = static_cast<int>(player->getskill().size());
@@ -36,18 +41,23 @@ bool Monster::triggerEvent(Object* obj) {
     cout << skill_count << ". Check current status" << endl;  // Option to check status
     cout << skill_count + 1 << ". Use items" << endl;  // Option to use items
     cout << skill_count + 2 << ". Flee" << endl;  // Option to flee
-
     int choice;
     cout << "Enter your choice: ";
     cin >> choice;
 
     if (choice < skill_count) {  // If using a skill
+        if (checkIsDead()) {
+            cout << "You defeated " << getName()<< "!\n";
+            return 0;
+        }
         if (player->getMP() - player->getskill()[choice].getCost() < 0) {
+
             cout << "You do not have enough MP. Try a normal attack!" << endl;
             return true;
         }
         else {
             float damage = player->cal_attackval(choice) - cal_defval(0);  // Monster's defense
+
             float modifier = 1.0f;
             string player_property = player->getskill()[choice].getProperty();
 
@@ -61,18 +71,18 @@ bool Monster::triggerEvent(Object* obj) {
                 else if (player_property == "fire") modifier = 0.8f;
             }
             else if (getprop() == "ground") {
-                if (player_property == "water") modifier = 1.5f;
-                else if (player_property == "fire") modifier = 0.8f;
+                if (player_property == "fire") modifier = 1.5f;
+                else if (player_property == "water") modifier = 0.8f;
             }
-
             damage *= modifier;
             player->setMP(player->getMP() - player->getskill()[choice].getCost());
             setCurrentHealth((getCurrentHealth() - static_cast<int>(damage)) >= 0 ? getCurrentHealth() - static_cast<int>(damage) : 0);
+            checkIsDead();
         }
     }
     else if (choice == skill_count) {  // Check current status
         player->printStatus();
-        this->printStatus();
+        //this->printStatus();
         return true;  // Continue the event
     }
     else if (choice == skill_count + 1) {  // Use items
@@ -84,20 +94,19 @@ bool Monster::triggerEvent(Object* obj) {
         player->setmoney((player->getmoney() - 5 > 0) ? player->getmoney() - 5 : 0);  // Deduct money for fleeing
         return false;  // End the event
     }
+    if (checkIsDead()) {
+        player->setmoney(player->getmoney() + 20);
+        return 0;
+    }
 
     // Monster's counter-attack logic
     if (!checkIsDead()) {  // If monster's still alive
-        srand(static_cast<unsigned int>(time(0)));
-        int attack_choice = rand() % (skill_count);  // Random attack
-        float damage = cal_atkval(attack_choice) - player->cal_defval(0);
+        int mst_dmg = getAttack() - player->cal_defval(choice) >= 0 ? getAttack() - player->cal_defval(choice) : 0;
+        if (mst_dmg > 0) {
+            player->setCurrentHealth(player->getCurrentHealth() - mst_dmg >= 0 ? player->getCurrentHealth() - mst_dmg : 0);
 
-        if (damage > 0) {
-            player->setCurrentHealth((player->getCurrentHealth() - static_cast<int>(damage)) >= 0 ?
-                player->getCurrentHealth() - static_cast<int>(damage) : 0);
         }
-        else {
-            cout << "The attack had no effect!" << endl;
-        }
+        
     }
 
     return true;  // Continue the event
@@ -124,7 +133,7 @@ Boss::Boss() {
     setdefeated(0); return;
 }
 Boss::Boss(string tname, int chp, int a, int d, vector<Skill> tskills) {
-    setName(tname); setCurrentHealth(chp); setMaxHealth(chp); setAttack(a); setDefense(d); 
+    setName(tname); setCurrentHealth(chp); setMaxHealth(chp); setAttack(a); setDefense(d); setdefeated(0);
 }
 vector<Skill> Boss::getskill() {
     return skills;
@@ -152,63 +161,106 @@ bool Boss::getdefeated() {
 }
 
 bool Boss::triggerEvent(Object* obj) {
+    //printStatus();
     Player* player = dynamic_cast<Player*>(obj);
-    if (this->checkIsDead()) {  // If the boss is defeated
-        return false;  // End the event
+    if (this->checkIsDead()) {
+        cout << "You defeated " << getName() << "!\n";
+
+        return false;  // If monster is dead, end event
+    }
+    if (player->checkIsDead()) {
+        return false;  // If player is dead, end event
     }
 
-    int choice;
+    // Example combat interaction
+    cout << "---------------------------------------" << endl;
+    printStatus();
     cout << "---------------------------------------" << endl;
 
-    for (int i = 0; i < player->getskill().size(); i++) {
+    int skill_count = static_cast<int>(player->getskill().size());
+    for (int i = 0; i < skill_count; ++i) {
         cout << i << ". Using " << player->getskill()[i].getname()
-            << " (cost: " << player->getskill()[i].getCost() << ")" << endl;
+            << " (property: " << player->getskill()[i].getProperty()
+            << ", cost: " << player->getskill()[i].getCost() << ")" << endl;
     }
 
-    cout << player->getskill().size() << ". Check status" << endl;
-    cout << (player->getskill().size() + 1) << ". Use items" << endl;
-    cout << (player->getskill().size() + 2) << ". Flee" << endl;
-
+    cout << skill_count << ". Check current status" << endl;  // Option to check status
+    cout << skill_count + 1 << ". Use items" << endl;  // Option to use items
+    cout << skill_count + 2 << ". Flee" << endl;  // Option to flee
+    int choice;
     cout << "Enter your choice: ";
     cin >> choice;
+    if (choice < skill_count) {  // If using a skill
 
-    if (choice < player->getskill().size()) {  // If using a skill
-        if (player->getMP() < player->getskill()[choice].getCost()) {
-            cout << "Not enough MP!" << endl;
-            return true;  // Continue the event
+        if (checkIsDead()) {
+            cout << "You defeated " << getName() << "!\n";
+            return 0;
         }
 
-        float damage = player->cal_attackval(choice) - cal_defval(0);
-        player->setMP(player->getMP() - player->getskill()[choice].getCost());
+        if (player->getMP() - player->getskill()[choice].getCost() < 0) {
 
-        float modifier = 1.0f;
-        if (getprop() == "fire" && player->getskill()[choice].getProperty() == "water") {
-            modifier = 1.5f;
+            cout << "You do not have enough MP. Try a normal attack!" << endl;
+            return true;
         }
 
-        damage *= modifier;
-        setCurrentHealth((getCurrentHealth() - static_cast<int>(damage)) >= 0 ? getCurrentHealth() - static_cast<int>(damage) : 0);
+        else {
+
+            float damage = (int)player->cal_attackval(choice) - (int)cal_defval(0);  // Monster's defense
+
+
+            float modifier = 1.0f;
+            string player_property = player->getskill()[choice].getProperty();
+
+
+            // Determine element advantage or disadvantage
+            if (getprop() == "fire") {
+                if (player_property == "water") modifier = 1.5f;
+                else if (player_property == "ground") modifier = 0.8f;
+            }
+
+            else if (getprop() == "water") {
+                if (player_property == "ground") modifier = 1.5f;
+                else if (player_property == "fire") modifier = 0.8f;
+            }
+            else if (getprop() == "ground") {
+                if (player_property == "fire") modifier = 1.5f;
+                else if (player_property == "water") modifier = 0.8f;
+            }
+
+            damage *= modifier;
+            player->setMP(player->getMP() - player->getskill()[choice].getCost());
+            setCurrentHealth((getCurrentHealth() - static_cast<int>(damage)) >= 0 ? getCurrentHealth() - static_cast<int>(damage) : 0);
+
+            //checkIsDead();
+        }
     }
-    else if (choice == player->getskill().size()) {  // Check status
+    else if (choice == skill_count) {  // Check current status
         player->printStatus();
-        printStatus();
+        //this->printStatus();
         return true;  // Continue the event
     }
-    else if (choice == player->getskill().size() + 1) {  // Use items
-        player->triggerEvent(player);
+    else if (choice == skill_count + 1) {  // Use items
+        bool isFinish = player->triggerEvent(player);
         return true;  // Continue the event
     }
-    else if (choice == player->getskill().size() + 2) {  // Flee
-        cout << "Fleeing from combat." << endl;
-        player->setmoney((player->getmoney() - 5 > 0) ? player->getmoney() - 5 : 0);
+    else if (choice == skill_count + 2) {  // Flee
+        cout << "You flee from combat." << endl;
+        player->setmoney((player->getmoney() - 5 > 0) ? player->getmoney() - 5 : 0);  // Deduct money for fleeing
         return false;  // End the event
     }
+    if (checkIsDead()) {
 
-    // Boss attacks back
-    if (!checkIsDead()) {
-        int boss_attack = cal_attackval(0);
-        player->setCurrentHealth((player->getCurrentHealth() - boss_attack) >= 0 ?
-            player->getCurrentHealth() - boss_attack : 0);
+        return 0;
+    }
+
+    // Monster's counter-attack logic
+    if (!checkIsDead()) {  // If monster's still alive
+        int mst_dmg = getAttack() - player->cal_defval(choice) >= 0 ? getAttack() - player->cal_defval(choice) : 0;
+        if (mst_dmg > 0) {
+            player->setCurrentHealth(player->getCurrentHealth() - mst_dmg >= 0 ? player->getCurrentHealth() - mst_dmg : 0);
+
+        }
+
     }
 
     return true;  // Continue the event
@@ -227,11 +279,19 @@ int Boss::cal_attackval(int skill_index) {
 }
 int Boss::cal_defval(int skill_index) {
     int total = this->getDefense();
-    if (skill_index != -1) { //if not chosing skills*, it has to be -1
-        //then the option is 0~n
-        if (skills[skill_index].getImpactType() == "defense") {
-            total += skills[skill_index].getValue();
-        }
-    }
+    if (this->getCurrentHealth() / 200 < 0.5) total *= 2;
     return total;
+}
+void Boss::printStatus() {
+    cout << "---------------------------------------" << endl;
+    cout << getTag() << ": " << getName() << "'s Conditions: " << endl;
+    cout << "Health: " << getCurrentHealth() << "/" << getMaxHealth() << endl;
+    cout << "Attack: " << getAttack() << endl;
+    cout << "Defense: " << getDefense() << endl;
+    
+    for (int i = 0; i < skills.size(); i++) {
+        cout << "Skill " << i << ": " << skills[i].getname() << "  "
+            << "Property: " << skills[i].getProperty() << endl;
+    }
+    
 }

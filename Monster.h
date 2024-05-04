@@ -47,7 +47,7 @@ public:
     vector<Skill> getskill();
     void addskill(Skill);
     void setskill(vector<Skill>);
-
+    void printStatus();
     bool triggerEvent(Object* obj) ;
 
     int cal_attackval(int skill_index) ;

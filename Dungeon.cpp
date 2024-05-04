@@ -1,5 +1,6 @@
 #include "Dungeon.h" // Include the corresponding header file
 #include <iostream>
+#include<algorithm>
 using namespace std;
 
 // Initialize game state and provide an introductory story
@@ -18,7 +19,7 @@ void Dungeon::createPlayer() {
     cin >> player_name;
     //cout << "---------------------------------------" << endl;
 
-    Player new_player(player_name, 150, 100, 35, 25, 20, 20, 100);
+    Player new_player(player_name, 150, 100, 35, 15, 20, 20, 100);
     Skill skill1("Water Stream Rock Smashing Fist", "water", 5, "attack", 15);
     Skill skill2("Star Burst", "fire", 5, "attack", 15);
     Skill skill3("Seed Bullet", "ground", 5, "attack", 15);
@@ -61,8 +62,10 @@ void Dungeon::createMap() {
     Klee_script.push_back(tempscript);
     tempscript = "'Well... Bye-Bye onii-chan! Don't say where I am to Master Jean~'\n";
     Klee_script.push_back(tempscript);
-    NPC Klee = NPC("Klee", Klee_script); rooms[0][0].setObjects(&Klee);
+    NPC* Klee = new NPC("Klee", Klee_script); rooms[0][0].setObjects(Klee);
     rooms[3][1].setRoomType("NPC");
+
+
     vector<string> Himeko_script;
     tempscript = "When you enter the room, you see a familiar red - hair lady with a pour over coffee.She is the navigator of astral express : Himeko!\n";
     Himeko_script.push_back(tempscript);
@@ -72,75 +75,79 @@ void Dungeon::createMap() {
     Himeko_script.push_back(tempscript);
     tempscript = "'It's fine. Bless your road of trailblaze~'\n";
     Himeko_script.push_back(tempscript);
-    NPC Himeko = NPC("Himeko", Himeko_script); rooms[3][1].setObjects(&Himeko);
+    NPC* Himeko = new NPC("Himeko", Himeko_script); rooms[3][1].setObjects(Himeko);
     
     rooms[4][4].setRoomType("NPC");
     vector<string> AL1S_script;
-    tempscript = "When you enter the room, you see a little girl with a halo and and small robot accessory. She is the club member of game development department, princess of nameless gods, AL-1S(Alice).\n'Welcome. I has waited you for long times, and I know what hero are going to do, so I will give you my best help: My laser cannon.'\n'However, I need to give the engineering club some compensate, so I need $90 for them to make a new laser cannon. Do you want to give me?\n";
+    tempscript = "When you enter the room, you see a little girl with a halo and and small robot accessory. She is the club member of game development department, princess of nameless gods, AL-1S(Alice).\n";
+    AL1S_script.push_back(tempscript);
+    tempscript = "'Welcome. I has waited you for long times, and I know what hero are going to do, so I will give you my best help: My laser cannon.'\n'However, I need to give the engineering club some compensate, so I need $90 for them to make a new laser cannon. Do you want to give me?\n";
     AL1S_script.push_back(tempscript);
     tempscript = "'Then, the laser cannon is now yours. This shit is just fxxking insane.... use it to beat up anyone's ass!!!'\n";
     AL1S_script.push_back(tempscript);
     tempscript = "'OK, but yo' get in trouble like so deep bro... Good Luck!'\n";
     AL1S_script.push_back(tempscript);
-    NPC AL_1S = NPC("AL_1S", AL1S_script); rooms[4][4].setObjects(&AL_1S);
+    NPC* AL_1S = new NPC("AL_1S", AL1S_script); rooms[4][4].setObjects(AL_1S);
+
+
     /* Merchants */
     rooms[0][3].setRoomType("NPC");
     vector<Goods*> Beedle1_comods; vector<Food*> b1_foods;
-    Goods blade1 = Goods("blade lv1", 0, 5, 0, 10, "weapon", "gear"); Beedle1_comods.push_back(&blade1);
-    Goods sword1 = Goods("sword lv1", 0, 10, 0, 20, "weapon", "gear"); Beedle1_comods.push_back(&sword1);
-    Goods helmet1 = Goods("helmet lv1", 0, 0, 1, 10, "helmet", "gear"); Beedle1_comods.push_back(&helmet1);
-    Goods breastplate1 = Goods("breastplate lv1", 0, 0, 3, 20, "armor", "gear"); Beedle1_comods.push_back(&breastplate1);
-    Food coriander_pizza = Food("coriander pizza", 10, 4, 0, "food"); b1_foods.push_back(&coriander_pizza);
-    Food stired_curry_rice = Food("stired curry rice", 20, 8, 0, "food"); b1_foods.push_back(&stired_curry_rice);
-    Food bottled_water = Food("bottled water", 10, 0, 4, "food"); b1_foods.push_back(&bottled_water);
-    Food oolong_tea = Food("oolong tea", 20, 0, 8, "food"); b1_foods.push_back(&oolong_tea);
-    Food milk = Food("Milk", 35, 2, 2, "milk"); b1_foods.push_back(&milk);
-    NPC Beedle1 = NPC("Beedle", Beedle1_comods, b1_foods); rooms[0][3].setObjects(&Beedle1);
+    Goods* blade1 = new Goods("blade lv1", 0, 5, 0, 10, "weapon", "gear"); Beedle1_comods.push_back(blade1);
+    Goods* sword1 = new Goods("sword lv1", 0, 10, 0, 20, "weapon", "gear"); Beedle1_comods.push_back(sword1);
+    Goods* helmet1 = new Goods("helmet lv1", 0, 0, 1, 10, "helmet", "gear"); Beedle1_comods.push_back(helmet1);
+    Goods* breastplate1 = new Goods("breastplate lv1", 0, 0, 3, 20, "armor", "gear"); Beedle1_comods.push_back(breastplate1);
+    Food* coriander_pizza = new Food("coriander pizza", 10, 4, 0, "food"); b1_foods.push_back(coriander_pizza);
+    Food* stired_curry_rice = new Food("stired curry rice", 20, 8, 0, "food"); b1_foods.push_back(stired_curry_rice);
+    Food* bottled_water =new Food("bottled water", 10, 0, 4, "food"); b1_foods.push_back(bottled_water);
+    Food* oolong_tea =new Food("oolong tea", 20, 0, 8, "food"); b1_foods.push_back(oolong_tea);
+    Food* milk = new Food("Milk", 35, 2, 2, "milk"); b1_foods.push_back(milk);
+    NPC* Beedle1 = new NPC("Beedle", Beedle1_comods, b1_foods); rooms[0][3].setObjects(Beedle1);
 
     rooms[1][4].setRoomType("NPC");
     vector<Goods*> Beedle2_comods; vector<Food*>b2_foods;
-    Goods blade2 = Goods("blade lv2", 0, 15, 0, 30, "weapon", "gear"); Beedle2_comods.push_back(&blade2);
-    Goods sword2 = Goods("sword lv2", 0, 20, 0, 40, "weapon", "gear"); Beedle2_comods.push_back(&sword2);
-    Goods helmet2 = Goods("helmet lv2", 0, 0, 3, 10, "helmet", "gear"); Beedle2_comods.push_back(&helmet2);
-    Goods breastplate2 = Goods("breastplate lv2", 0, 0, 5, 20, "armor", "gear"); Beedle2_comods.push_back(&breastplate2);
-    b2_foods.push_back(&coriander_pizza);
-    b2_foods.push_back(&stired_curry_rice);
-    b2_foods.push_back(&bottled_water);
-    b2_foods.push_back(&oolong_tea);
-    b2_foods.push_back(&milk);
-    NPC Beedle2 = NPC("Beedle but cooler", Beedle2_comods, b2_foods); rooms[1][4].setObjects(&Beedle2);
+    Goods* blade2 = new Goods("blade lv2", 0, 15, 0, 30, "weapon", "gear"); Beedle2_comods.push_back(blade2);
+    Goods* sword2 = new Goods("sword lv2", 0, 20, 0, 40, "weapon", "gear"); Beedle2_comods.push_back(sword2);
+    Goods* helmet2 = new Goods("helmet lv2", 0, 0, 3, 10, "helmet", "gear"); Beedle2_comods.push_back(helmet2);
+    Goods* breastplate2 = new  Goods("breastplate lv2", 0, 0, 5, 20, "armor", "gear"); Beedle2_comods.push_back(breastplate2);
+    Food* coriander_pizza1 = new Food("coriander pizza", 10, 4, 0, "food"); b1_foods.push_back(coriander_pizza1);
+    Food* stired_curry_rice1 = new Food("stired curry rice", 20, 8, 0, "food"); b2_foods.push_back(stired_curry_rice1);
+    Food* bottled_water1 = new Food("bottled water", 10, 0, 4, "food"); b2_foods.push_back(bottled_water1);
+    Food* oolong_tea1 = new Food("oolong tea", 20, 0, 8, "food"); b2_foods.push_back(oolong_tea1);
+    Food* milk1 = new Food("Milk", 35, 2, 2, "milk"); b2_foods.push_back(milk1);
+    NPC* Beedle2 = new NPC("Beedle but cooler", Beedle2_comods, b2_foods); rooms[1][4].setObjects(Beedle2);
 
     /* Boss to be made */
     vector<string> boss_script;
     tempscript = "You've finally been here. I'm impressed that you do not withdraw from the Calculus by Prof. Lin Bear.\n But I'm sorry you must have a C- here. NOW¡@DIE!\n"; boss_script.push_back(tempscript);
-    tempscript = "DROP the cource and try next time.\n"; boss_script.push_back(tempscript);
+    tempscript = "DROP the course and try next time.\n"; boss_script.push_back(tempscript);
     tempscript = "Fine... you are capable. Next time you will know when you meet Probability.\n"; boss_script.push_back(tempscript);
 
     vector<Skill> tempskills; //    Skill(string tn, string prop, int val, string ontype)
     tempskills.push_back(Skill("Parametric Curve", "psycho", 15, "attack"));
     tempskills.push_back(Skill("Triple Integral", "psycho", 15, "attack"));
     tempskills.push_back(Skill("Directional Derivation", "psycho", 15, "attack"));
-    Boss boss = Boss("Calculus", 200, 40, 15, tempskills); boss.setscript(boss_script);
-    rooms[0][4].setObjects(&boss);
-    finalboss = &boss;
+    Boss* boss = new Boss("Calculus", 200, 40, 15, tempskills); boss->setscript(boss_script);
+    rooms[0][4].setObjects(boss);
+    finalboss = boss;
 
     /* monsters */
-    Monster Skeleton_lv1 = Monster("Skeleton lv1", 70, 25, 0, "ground"); Skeleton_lv1.setTag("monster"); //no skill, normal attack
-    rooms[4][3].setObjects(&Skeleton_lv1);
-    Monster Skeleton_lv2 = Monster("Skeleton lv2", 100, 30, 0, "ground"); Skeleton_lv2.setTag("monster");
-    rooms[1][2].setObjects(&Skeleton_lv2);
-    Monster Zombie_lv1 = Monster("Zombie lv1", 70, 20, 5, "fire"); Zombie_lv1.setTag("monster");
-    rooms[3][2].setObjects(&Zombie_lv1);
-    Monster Zombie_lv2 = Monster("Zombie lv2", 100, 25, 5, "fire"); Zombie_lv2.setTag("monster");
-    rooms[2][1].setObjects(& Zombie_lv2);
-    Monster Zombie_lv3 = Monster("Zombie lv3", 120, 30, 5, "fire"); Zombie_lv3.setTag("monster");
-    rooms[1][3].setObjects(&Zombie_lv3);
-    Monster Slime_lv1 = Monster("Slime lv1", 100, 20, 0, "water"); Slime_lv1.setTag("monster");
-    rooms[4][2].setObjects(&Slime_lv1);
-    Monster Slime_lv2 = Monster("Slime lv2", 120, 25, 0, "water"); Slime_lv2.setTag("monster");
-    rooms[3][3].setObjects(&Slime_lv2);
-    Monster Slime_lv3 = Monster("Slime lv3", 150, 25, 0, "water"); Slime_lv3.setTag("monster");
-    rooms[2][3].setObjects(&Slime_lv3);
+    Monster* Skeleton_lv1 = new Monster("Skeleton lv1", 70, 25, 0, "ground"); Skeleton_lv1->setTag("monster"); //no skill, normal attack
+    rooms[4][3].setObjects(Skeleton_lv1);
+    Monster* Skeleton_lv2 =new Monster("Skeleton lv2", 100, 30, 0, "ground"); Skeleton_lv2->setTag("monster");
+    rooms[1][2].setObjects(Skeleton_lv2);
+    Monster* Zombie_lv1 =new Monster("Zombie lv1", 70, 20, 5, "fire"); Zombie_lv1->setTag("monster");
+    rooms[3][2].setObjects(Zombie_lv1);
+    Monster* Zombie_lv2 =  new Monster("Zombie lv2", 100, 25, 5, "fire"); Zombie_lv2->setTag("monster");
+    rooms[2][1].setObjects(Zombie_lv2);
+    Monster* Zombie_lv3 = new Monster("Zombie lv3", 120, 30, 5, "fire"); Zombie_lv3->setTag("monster");
+    rooms[1][3].setObjects(Zombie_lv3);
+    Monster* Slime_lv1 = new Monster("Slime lv1", 100, 20, 0, "water"); Slime_lv1->setTag("monster");
+    rooms[4][2].setObjects(Slime_lv1);
+    Monster* Slime_lv2 = new Monster("Slime lv2", 120, 25, 0, "water"); Slime_lv2->setTag("monster");
+    rooms[3][3].setObjects(Slime_lv2);
+    Monster* Slime_lv3 = new Monster("Slime lv3", 150, 25, 0, "water"); Slime_lv3->setTag("monster");
+    rooms[2][3].setObjects(Slime_lv3);
 
 
     rooms[0][1].setRoomType("wildlife"); rooms[0][2].setRoomType("swamp"); rooms[0][3].setRoomType("NPC"); rooms[0][4].setRoomType("BOSS");
@@ -163,10 +170,9 @@ void Dungeon::createMap() {
             else { rooms[i][j].setRightRoom(&rooms[i][j + 1]); }
         }
     }    
+    Food* milk2 = new Food("Milk", 35, 2, 2, "milk"); rooms[4][1].setObjects(milk2);
 
     historyRoom.push_back(&rooms[4][0]);
-
-    /*creating everything here*/
 }
 
 // Print the map to console
@@ -210,7 +216,8 @@ void Dungeon::handleMovement()
         cout << "Invalid Input. Choose Your Action";  cin >> motion;
     }
     if (motion == 0) return;
-    if (motion == 1 && player.getCurrentRoom()->getIndex() - 5 > 0 && player.getCurrentRoom()->getUpRoom()->getRoomType() != "BLOCKED") { //upRoom is not empty and is not BLOCKED 
+    //upRoom is not empty and is not BLOCKED 
+    if (motion == 1 && player.getCurrentRoom()->getIndex() - 5 > 0 && player.getCurrentRoom()->getUpRoom()->getRoomType() != "BLOCKED") {
         if (player.getCurrentRoom()->getUpRoom()->getRoomType() == "BLOCKED") {
             cout << "This way is Blocked!\n"; historyRoom.push_back(player.getCurrentRoom()->getUpRoom()); return;
         }
@@ -242,7 +249,7 @@ void Dungeon::handleMovement()
         player.setCurrentRoom(player.getCurrentRoom()->getLeftRoom());
         historyRoom.push_back(player.getCurrentRoom());
     }
-    
+
 
     /*Dessert    hunger -1 more(eventually -3 when enter)
          Sandstorm    hunger -2 more    thirst -2 more
@@ -267,32 +274,103 @@ void Dungeon::handleMovement()
     else if (player.getCurrentRoom()->getRoomType() == "lake") player.setTHR((player.getTHR() + 6 >= 20) ? 20 : player.getTHR() + 6);
     else if (player.getCurrentRoom()->getRoomType() == "swamp") player.setCurrentHealth((player.getCurrentHealth() - 2 <= 0) ? 0 : player.getCurrentHealth() - 2);
     else if (player.getCurrentRoom()->getRoomType() == "mushroom land") player.setHG((player.getHG() + 6 >= 20) ? 20 : player.getHG() + 6);
-    else if (player.getCurrentRoom()->getRoomType() == "purify water") player.setTHR((player.getTHR() + 6 >= 20) ? 20 : player.getTHR() + 6);
-    else if (player.getCurrentRoom()->getRoomType() == "NPC") player.setTHR((player.getTHR() + 1 >= 20) ? 20 : player.getTHR() + 1); player.setHG((player.getHG() + 1 >= 20) ? 20 : player.getHG() + 1);
+    else if (player.getCurrentRoom()->getRoomType() == "purify water") {
+        player.setTHR((player.getTHR() + 6 >= 20) ? 20 : player.getTHR() + 6);
+        player.setMP(player.getMP() + 50 >= 150 ? 150 : player.getMP() + 50);
+        if (player.getTHR() > 8) {
+            player.getCondition().erase(
+                std::remove_if(
+                    player.getCondition().begin(),
+                    player.getCondition().end(),
+                    [](Condition* condition) { return condition->getName() == "Thirsty"; }
+                ),
+                player.getCondition().end()
+            );
+        }
+        if (player.getHG() > 8) {
+            player.getCondition().erase(
+                std::remove_if(
+                    player.getCondition().begin(),
+                    player.getCondition().end(),
+                    [](Condition* condition) { return condition->getName() == "Hungry"; }
+                ),
+                player.getCondition().end()
+            );
+        }
+    }
+    else if (player.getCurrentRoom()->getRoomType() == "NPC") { player.setTHR((player.getTHR() + 1 >= 20) ? 20 : player.getTHR() + 1); player.setHG((player.getHG() + 1 >= 20) ? 20 : player.getHG() + 1); }
 
     player.refreshStatus(); //refresh status
     return;
 }
-
 // Deal with player interactions with objects in the room
 void Dungeon::handleEvent(Object* curobj) {
     NPC* npc = dynamic_cast<NPC*>(curobj);//if not then null
     Monster* monster = dynamic_cast<Monster*> (curobj);
+    Boss* boss = dynamic_cast<Boss*>(curobj);
+    Food* milk = dynamic_cast<Food*>(curobj);
+    Goods* gear = dynamic_cast<Goods*>(curobj);
 
     cout << "---------------------------------------" << endl;
     if (npc) {
-        bool status = npc->triggerEvent(&player);
-        cout << "nice";
 
-        while (status) {
-            status = npc->triggerEvent(&player);
+        bool status = npc->triggerEvent(&player);
+        if (!npc->getIsinteract()) {
+            while (status) {
+                status = npc->triggerEvent(&player);
+            }
+        }
+        else {
+            cout << "You've been interacted with " << npc->getName() << endl;
+        }
+     }
+        
+    else if (monster) {
+        if (monster->checkIsDead()) {
+            cout << "It's dead now, no need to attack him bro.\n";
+
+            return;
+        }
+        bool status = monster->triggerEvent(&player);
+        while (!monster->checkIsDead() && status) {
+            status = monster->triggerEvent(&player);
         }
     }
-    else if (monster) {
-        bool status = npc->triggerEvent(&player);
-        while (status) {
-            status = npc->triggerEvent(&player);
+    else if (boss) {
+        cout << boss->getscript()[0];
+        if (boss->checkIsDead()) {
+            isWin = 1;
+            return;
         }
+        bool status = boss->triggerEvent(&player);
+        while (!boss->checkIsDead() && status) {
+            status = boss->triggerEvent(&player);
+        }
+        if (player.checkIsDead()) cout << boss->getscript()[1]; 
+        
+        return;
+    }
+    else if (milk) {
+        static int isPicked=0;
+        if (isPicked) {
+            cout << "You've picked up this. Don't be that greedy\n"; return;
+        }
+        if (!isPicked) {
+            player.pickupItem(milk); 
+            isPicked = 1;
+        }
+        
+    }
+    else if (gear) {
+        static int isPicked = 0;
+        if (isPicked) {
+            cout << "You've picked up this. Don't be that greedy\n"; return;
+        }
+        if (!isPicked) {
+            player.pickupItem(gear); 
+            isPicked = 1;
+        }
+        
     }
     
 }
@@ -300,7 +378,6 @@ void Dungeon::handleEvent(Object* curobj) {
 // Start the game, creating the map and the player
 void Dungeon::startGame() {
     createMap();
-
     createPlayer();
 
     player.setCurrentRoom(&rooms[4][0]); historyRoom.push_back(&rooms[4][0]);
@@ -314,9 +391,11 @@ void Dungeon::chooseAction() {
 
     cout << "You are now in room " << currentRoom->getIndex() << ". Choose your action:\n";
     cout << "---------------------------------------" << endl; 
-    if (currentRoom->getObjects() != NULL) { 
+    if (currentRoom->getObjects() != nullptr) { 
         NPC* npc = dynamic_cast<NPC*>(currentRoom->getObjects());//if not then null
         Monster* monster = dynamic_cast<Monster*> (currentRoom->getObjects());
+        Food* milk = dynamic_cast<Food*> (currentRoom->getObjects());
+        Goods* gear = dynamic_cast<Goods*>(currentRoom->getObjects());
         if (npc) {
             string tname = npc->getName();
             cout << 0 << ". Interact with " << tname << "\n";
@@ -325,6 +404,12 @@ void Dungeon::chooseAction() {
             string tname = monster->getName();
             cout << 0 << ". Combat with " << tname << "\n";
 
+        }
+        else if (milk) {
+            cout << 0 << ". Pick up the" << milk->getName() << endl;
+        }
+        else if (gear) {
+            cout << 0 << ". Pick up the" << gear->getName() << endl;
         }
     }
 
@@ -340,12 +425,12 @@ void Dungeon::chooseAction() {
     if (choice == 0) {
         NPC* npc = dynamic_cast<NPC*>(currentRoom->getObjects());
         Monster* monster = dynamic_cast<Monster*>(currentRoom->getObjects());
-        if (npc) {
-            handleEvent(npc);
-        }
-        else if (monster) {
-            handleEvent(monster);
-        }
+        Food* milk = dynamic_cast<Food*> (currentRoom->getObjects());
+        Goods* gear = dynamic_cast<Goods*>(currentRoom->getObjects());
+        if (npc)  handleEvent(npc);
+        else if (monster) handleEvent(monster);
+        else if (milk) handleEvent(milk);
+        else if (gear) handleEvent(gear);
     }
     else if (choice == 1) {
         printMap();
@@ -357,7 +442,7 @@ void Dungeon::chooseAction() {
         handleMovement();
     }
     else if (choice == 4) {
-        player.triggerEvent(&player);
+        player.triggerEvent(&player); return;
     }
     else {
         cout << "Invalid choice.\nChoose Your Action"; cin >> choice;
@@ -368,11 +453,9 @@ bool Dungeon::checkGameLogic() {
     if (player.checkIsDead()) {
         return true; // Player died
     }
-
     if (isWin) {
         return true; // Player won
     }
-
     return false; // Continue the game
 }
 
@@ -397,7 +480,8 @@ void Dungeon::runDungeon() {
     }
 
     if (isWin && player.getCurrentHealth() > 0) {
-        cout << "The adventurer successfully beat the boss and saved the world!\n";
+        cout << finalboss->getscript()[2];
+        cout << "You Won the Game !!! Enjoy the last of yours:)))))))";
     }
     else {
         cout << "Game over. You died in your adventure.\n";
